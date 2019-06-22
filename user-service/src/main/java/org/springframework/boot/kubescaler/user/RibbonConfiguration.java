@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 
 public class RibbonConfiguration {
 
+  @SuppressWarnings("SpringJavaAutowiredMembersInspection")
   @Autowired
   IClientConfig ribbonClientConfig;
 
