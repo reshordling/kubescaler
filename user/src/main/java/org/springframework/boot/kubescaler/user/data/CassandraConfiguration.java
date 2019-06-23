@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.CassandraCqlClusterFactoryBean;
-import org.springframework.data.cassandra.config.CassandraSessionFactoryBean;
 import org.springframework.data.cassandra.config.SchemaAction;
 import org.springframework.data.cassandra.core.CassandraOperations;
 import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification;
 import org.springframework.data.cassandra.core.cql.keyspace.KeyspaceOption;
+import com.datastax.driver.core.policies.Policies;
 
 @Configuration
 public class CassandraConfiguration extends AbstractCassandraConfiguration {
@@ -52,6 +52,8 @@ public class CassandraConfiguration extends AbstractCassandraConfiguration {
     CassandraCqlClusterFactoryBean bean = new CassandraCqlClusterFactoryBean();
     bean.setKeyspaceCreations(getKeyspaceCreations());
     bean.setContactPoints(contactPoints);
+    bean.setReconnectionPolicy(Policies.defaultReconnectionPolicy());
+    bean.setRetryPolicy(Policies.defaultRetryPolicy());
     bean.setPort(port);
     bean.setJmxReportingEnabled(false);
     return bean;
