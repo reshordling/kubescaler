@@ -91,7 +91,7 @@
   </dependencies>
 
   <modules>
-    <module>user-service</module>
+    <module>user</module>
   </modules>
 
   <build>

@@ -7,8 +7,8 @@ eval $(minikube docker-env)
 mvn clean install
 
 ### build the docker images on minikube
-cd user-service
-docker build -t user-service .
+cd user
+docker build -t user .
 cd ..
 
 # Bind access
@@ -27,11 +27,21 @@ kubectl create clusterrolebinding default-admin --clusterrole cluster-admin --se
 #
 #
 ### user-service
-kubectl delete configmap user-service || true
-kubectl delete -f user-service/user-service-deployment.yaml || true
+#kubectl delete configmap user-service || true
+#kubectl delete -f user-service/user-service-deployment.yaml || true
 
-kubectl create -f user-service/user-config.yaml
-kubectl create -f user-service/user-service-deployment.yaml
+
+# CPU based autoscaling, for custom metrics use prometheus
+# see https://learnk8s.io/blog/scaling-spring-boot-microservices/
+kubectl create -f monitoring/metrics-server
+kubectl create -f monitoring/namespaces.yaml
+kubectl create -f monitoring/prometheus
+kubectl create -f monitoring/custom-metrics-api
+
+kubectl create -f user/k8s/config.yaml
+kubectl create -f user/k8s/service.yaml
+kubectl create -f user/k8s/deployment.yaml
+kubectl create -f user/k8s/hpa.yaml
 
 # Check that the pods are running
 kubectl get pods

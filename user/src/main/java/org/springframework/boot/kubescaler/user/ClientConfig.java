@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "bean")
 public class ClientConfig {
 
-  private String message = "Message from backend is: %s <br/> Services : %s";
+  private String message = "Local config state";
 
   public String getMessage() {
     return message;

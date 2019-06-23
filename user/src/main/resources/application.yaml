@@ -1,5 +1,5 @@
 spring:
-  application.name: user-service
+  application.name: user
   cloud.kubernetes.reload.enabled: true
 server.port: 8080
 management:
