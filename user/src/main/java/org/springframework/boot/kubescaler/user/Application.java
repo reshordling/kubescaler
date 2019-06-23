@@ -15,14 +15,14 @@ import org.springframework.web.client.RestTemplate;
 @RibbonClient(name = "db-service", configuration = RibbonConfiguration.class)
 public class Application {
 
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
+
   @LoadBalanced
   @Bean
   RestTemplate restTemplate() {
     return new RestTemplate();
-  }
-
-  public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
   }
 
 

@@ -18,23 +18,23 @@ spec:
     spec:
       serviceAccountName: prometheus
       containers:
-      - name: prometheus
-        image: prom/prometheus:v2.1.0
-        imagePullPolicy: Always
-        command:
-          - prometheus
-          - --config.file=/etc/prometheus/prometheus.yml
-          - --storage.tsdb.retention=1h
-        ports:
-        - containerPort: 9090
-          protocol: TCP
-        resources:
-          limits:
-            memory: 2Gi
-        volumeMounts:
-        - mountPath: /etc/prometheus/prometheus.yml
-          name: prometheus-config
-          subPath: prometheus.yml
+        - name: prometheus
+          image: prom/prometheus:v2.1.0
+          imagePullPolicy: Always
+          command:
+            - prometheus
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.retention=1h
+          ports:
+            - containerPort: 9090
+              protocol: TCP
+          resources:
+            limits:
+              memory: 2Gi
+          volumeMounts:
+            - mountPath: /etc/prometheus/prometheus.yml
+              name: prometheus-config
+              subPath: prometheus.yml
       volumes:
         - name: prometheus-config
           configMap:

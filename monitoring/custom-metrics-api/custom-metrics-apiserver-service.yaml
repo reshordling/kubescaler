@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   ports:
-  - port: 443
-    targetPort: 6443
+    - port: 443
+      targetPort: 6443
   selector:
     app: custom-metrics-apiserver

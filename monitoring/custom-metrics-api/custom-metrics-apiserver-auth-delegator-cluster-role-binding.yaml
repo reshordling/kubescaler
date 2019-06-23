@@ -7,6 +7,6 @@ roleRef:
   kind: ClusterRole
   name: system:auth-delegator
 subjects:
-- kind: ServiceAccount
-  name: custom-metrics-apiserver
-  namespace: monitoring
+  - kind: ServiceAccount
+    name: custom-metrics-apiserver
+    namespace: monitoring

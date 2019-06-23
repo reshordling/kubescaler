@@ -1,7 +1,6 @@
 package org.springframework.boot.kubescaler.user;
 
 import java.lang.management.ManagementFactory;
-import com.sun.management.OperatingSystemMXBean;
 import java.lang.management.MemoryMXBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -16,14 +15,14 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class UserController {
 
+  private final RestTemplate restTemplate;
+  private final ClientConfig config;
+  private final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
+
   public UserController(RestTemplate restTemplate, ClientConfig config) {
     this.restTemplate = restTemplate;
     this.config = config;
   }
-
-  private final RestTemplate restTemplate;
-  private final ClientConfig config;
-  private final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
 
   @GetMapping("")
   public String helloWorld() throws UnknownHostException {
@@ -32,12 +31,12 @@ public class UserController {
   }
 
   @ResponseBody
-  @RequestMapping(value="/metrics", produces="text/plain")
+  @RequestMapping(value = "/metrics", produces = "text/plain")
   public String metrics() {
-    return String.format("# HELP active users\n# TYPE memory gauge\nmemory %d",mbean.getHeapMemoryUsage().getUsed() / 1024 / 1024);
+    return String.format("# HELP active users\n# TYPE memory gauge\nmemory %d", mbean.getHeapMemoryUsage().getUsed() / 1024 / 1024);
   }
 
-  @RequestMapping(value="/health")
+  @RequestMapping(value = "/health")
   public ResponseEntity health() {
     return new ResponseEntity<>(HttpStatus.OK);
   }

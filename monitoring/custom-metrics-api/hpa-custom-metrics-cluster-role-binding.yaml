@@ -7,6 +7,6 @@ roleRef:
   kind: ClusterRole
   name: custom-metrics-server-resources
 subjects:
-- kind: ServiceAccount
-  name: horizontal-pod-autoscaler
-  namespace: kube-system
+  - kind: ServiceAccount
+    name: horizontal-pod-autoscaler
+    namespace: kube-system
