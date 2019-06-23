@@ -21,6 +21,7 @@
     <spring-boot-maven-plugin.version>2.1.6.RELEASE</spring-boot-maven-plugin.version>
     <spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
     <spring.cloud.k8s.version>1.0.1.RELEASE</spring.cloud.k8s.version>
+    <lombok.version>1.18.8</lombok.version>
     <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
     <org.slf4j.version>1.7.21</org.slf4j.version>
     <logback.version>1.1.7</logback.version>
@@ -69,7 +70,12 @@
       <artifactId>logback-core</artifactId>
       <version>${logback.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- javax.xml.bind for Java 12 -->
     <dependency>

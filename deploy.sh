@@ -38,6 +38,9 @@ kubectl create -f monitoring/namespaces.yaml
 kubectl create -f monitoring/prometheus
 kubectl create -f monitoring/custom-metrics-api
 
+kubectl apply -f cassandra/service.yaml
+kubectl apply -f cassandra/stateful-set.yaml
+
 kubectl create -f user/k8s/config.yaml
 kubectl create -f user/k8s/service.yaml
 kubectl create -f user/k8s/deployment.yaml
