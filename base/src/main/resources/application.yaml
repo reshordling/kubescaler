@@ -1,0 +1,22 @@
+spring:
+  application.name: user
+  cloud.kubernetes.reload.enabled: true
+  data:
+    cassandra:
+      contact-points: cassandra
+      port: 9042
+      schema-action: create_if_not_exists
+      keyspace-name: kubescaler
+server.port: 8080
+management:
+  endpoint:
+    restart:
+      enabled: true
+    health:
+      enabled: true
+    info:
+      enabled: true
+ribbon:
+  http:
+    client:
+      enabled: true

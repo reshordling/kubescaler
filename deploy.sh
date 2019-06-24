@@ -44,6 +44,9 @@ kubectl create -f cassandra/stateful-set.yaml
 kubectl create -f redis/service.yaml
 kubectl create -f redis/deployment.yaml
 
+kubectl create -f base/k8s/service.yaml
+kubectl create -f base/k8s/deployment.yaml
+
 kubectl create -f user/k8s/config.yaml
 kubectl create -f user/k8s/service.yaml
 kubectl create -f user/k8s/deployment.yaml
