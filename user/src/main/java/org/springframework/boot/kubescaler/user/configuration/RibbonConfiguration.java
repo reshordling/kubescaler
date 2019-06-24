@@ -1,4 +1,4 @@
-package org.springframework.boot.kubescaler.user;
+package org.springframework.boot.kubescaler.user.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,9 @@
 spring:
   application.name: user
   cloud.kubernetes.reload.enabled: true
+  redis:
+    host: redis
+    port: 6379
   data:
     cassandra:
       contact-points: cassandra

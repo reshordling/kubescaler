@@ -41,6 +41,9 @@ kubectl create -f monitoring/custom-metrics-api
 kubectl apply -f cassandra/service.yaml
 kubectl apply -f cassandra/stateful-set.yaml
 
+kubectl apply -f redis/service.yaml
+kubectl apply -f redis/deployment.yaml
+
 kubectl create -f user/k8s/config.yaml
 kubectl create -f user/k8s/service.yaml
 kubectl create -f user/k8s/deployment.yaml

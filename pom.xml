@@ -21,6 +21,9 @@
     <spring-boot-maven-plugin.version>2.1.6.RELEASE</spring-boot-maven-plugin.version>
     <spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
     <spring.cloud.k8s.version>1.0.1.RELEASE</spring.cloud.k8s.version>
+    <spring.data.redis.version>2.1.6.RELEASE</spring.data.redis.version>
+    <cassandra.driver.version>3.7.1</cassandra.driver.version>
+    <jedis.version>2.9.3</jedis.version>
     <lombok.version>1.18.8</lombok.version>
     <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
     <org.slf4j.version>1.7.21</org.slf4j.version>
@@ -42,6 +45,27 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-kubernetes-dependencies</artifactId>
         <version>${spring.cloud.k8s.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+        <version>${spring.data.redis.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.datastax.cassandra</groupId>
+        <artifactId>cassandra-driver-core</artifactId>
+        <version>${cassandra.driver.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <version>${jedis.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

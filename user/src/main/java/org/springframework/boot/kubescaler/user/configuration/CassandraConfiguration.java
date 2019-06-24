@@ -1,4 +1,4 @@
-package org.springframework.boot.kubescaler.user.data;
+package org.springframework.boot.kubescaler.user.configuration;
 
 import java.util.Collections;
 import java.util.List;

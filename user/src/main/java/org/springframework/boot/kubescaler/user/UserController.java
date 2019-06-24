@@ -2,6 +2,10 @@ package org.springframework.boot.kubescaler.user;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.springframework.boot.kubescaler.user.cache.DataCacheService;
+import org.springframework.boot.kubescaler.user.configuration.ClientConfig;
 import org.springframework.boot.kubescaler.user.data.User;
 import org.springframework.boot.kubescaler.user.data.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -22,22 +26,32 @@ public class UserController {
   private final ClientConfig config;
   private final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
   private final UserRepository userRepository;
+  private final DataCacheService cacheService;
 
-  public UserController(RestTemplate restTemplate, ClientConfig config, UserRepository userRepository) {
+  public UserController(RestTemplate restTemplate, ClientConfig config, UserRepository userRepository, DataCacheService cacheService) {
     this.restTemplate = restTemplate;
     this.config = config;
     this.userRepository = userRepository;
+    this.cacheService = cacheService;
   }
 
   @GetMapping("")
   public String list() {
-    return "Hello from " + userRepository.count() + " user(s) supported by " + config.getMessage();
+    String host = "";
+    try {
+      host = InetAddress.getLocalHost().getHostName();
+    }
+    catch (UnknownHostException e) {
+      e.printStackTrace();
+    }
+    return host + ": Hello from " + userRepository.count() + " user(s) supported by " + config.getMessage() + " cached " + cacheService.get("Lala");
   }
 
   @GetMapping("/create")
   public String create() {
     User user = new User();
     userRepository.save(user);
+    cacheService.put("Lala", "distributed cache");
     return "Created user " + user.getId();
   }
 
