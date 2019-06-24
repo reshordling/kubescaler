@@ -49,5 +49,7 @@ kubectl create -f user/k8s/service.yaml
 kubectl create -f user/k8s/deployment.yaml
 kubectl create -f user/k8s/hpa.yaml
 
+kubectl create -f ingress/gateway.yaml
+
 # Check that the pods are running
 kubectl get pods
