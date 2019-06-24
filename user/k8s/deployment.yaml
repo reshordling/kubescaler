@@ -19,6 +19,9 @@ spec:
         - name: init-cassandra
           image: busybox
           command: ['sh', '-c', 'until nslookup cassandra; do echo waiting for cassandra; sleep 2; done;']
+        - name: init-redis
+          image: busybox
+          command: ['sh', '-c', 'until nslookup redis; do echo waiting for redis; sleep 2; done;']
       containers:
         - name: user
           image: user:latest
