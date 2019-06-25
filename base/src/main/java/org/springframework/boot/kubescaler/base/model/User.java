@@ -7,19 +7,15 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 import com.datastax.driver.core.DataType;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
-@Table
-@AllArgsConstructor
+@Table("user")
 @Data
+@Builder
 public class User implements Serializable, UuidSetter {
 
   @PrimaryKey
   @CassandraType(type = DataType.Name.UUID)
   public UUID id;
-
-//  public User() {
-//    id = UUID.randomUUID();
-//  }
 }

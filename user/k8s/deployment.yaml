@@ -24,7 +24,7 @@ spec:
           command: ['sh', '-c', 'until nslookup redis; do echo waiting for redis; sleep 2; done;']
       containers:
         - name: user
-          image: user:latest
+          image: kubescaler/user:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 8080

@@ -1,5 +1,5 @@
 spring:
-  application.name: user
+  application.name: base
   cloud.kubernetes.reload.enabled: true
   data:
     cassandra:

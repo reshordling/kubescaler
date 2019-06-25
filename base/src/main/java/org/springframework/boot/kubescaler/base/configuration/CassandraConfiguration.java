@@ -43,7 +43,7 @@ public class CassandraConfiguration extends AbstractCassandraConfiguration {
 
   @Override
   public String[] getEntityBasePackages() {
-    return new String[]{"org.springframework.boot.kubescaler.base.data"};
+    return new String[]{"org.springframework.boot.kubescaler.base.model"};
   }
 
   @Bean

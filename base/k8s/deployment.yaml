@@ -21,7 +21,7 @@ spec:
           command: ['sh', '-c', 'until nslookup cassandra; do echo waiting for cassandra; sleep 2; done;']
       containers:
         - name: base
-          image: base:latest
+          image: kubescaler/base:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 8080

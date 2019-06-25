@@ -7,9 +7,8 @@ eval $(minikube docker-env)
 mvn clean install
 
 ### build the docker images on minikube
-cd user
-docker build -t user .
-cd ..
+docker build -t kubescaler/user user/
+docker build -t kubescaler/base base/
 
 # Bind access
 kubectl create clusterrolebinding default-admin --clusterrole cluster-admin --serviceaccount=default:default
@@ -47,10 +46,10 @@ kubectl create -f redis/deployment.yaml
 kubectl create -f base/k8s/service.yaml
 kubectl create -f base/k8s/deployment.yaml
 
-kubectl create -f user/k8s/config.yaml
-kubectl create -f user/k8s/service.yaml
-kubectl create -f user/k8s/deployment.yaml
-kubectl create -f user/k8s/hpa.yaml
+#kubectl create -f user/k8s/config.yaml
+#kubectl create -f user/k8s/service.yaml
+#kubectl create -f user/k8s/deployment.yaml
+#kubectl create -f user/k8s/hpa.yaml
 
 kubectl create -f ingress/gateway.yaml
 

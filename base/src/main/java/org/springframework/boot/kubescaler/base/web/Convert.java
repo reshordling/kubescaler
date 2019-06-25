@@ -9,15 +9,15 @@ class Convert {
   }
 
   static User base(org.springframework.boot.kubescaler.api.User user) {
-    return new User(user.getId());
+    return User.builder().id(user.getId()).build();
   }
 
 
   static org.springframework.boot.kubescaler.api.Profile api(Profile profile) {
-    return new org.springframework.boot.kubescaler.api.Profile(profile.getId());
+    return new org.springframework.boot.kubescaler.api.Profile(profile.getId(), profile.getUsers());
   }
 
   static Profile base(org.springframework.boot.kubescaler.api.Profile profile) {
-    return new Profile(profile.getId());
+    return Profile.builder().id(profile.getId()).users(profile.getUsers()).build();
   }
 }

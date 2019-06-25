@@ -61,7 +61,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
-          <mainClass>org.springframework.boot.kubescaler.user.Application</mainClass>
+          <mainClass>org.springframework.boot.kubescaler.base.Application</mainClass>
           <layout>JAR</layout>
         </configuration>
         <executions>
