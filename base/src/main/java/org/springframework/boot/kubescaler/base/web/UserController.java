@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
-@RequestMapping(path = "users/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(path = "users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class UserController {
 
   private final UserRepository userRepository;
@@ -26,7 +26,7 @@ public class UserController {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  @HystrixCommand(fallbackMethod = "notFound")
+  @HystrixCommand(fallbackMethod = "listFailback")
   public ResponseEntity<List<User>> list() {
     return ResponseEntity.ok(StreamSupport
         .stream(userRepository.findAll().spliterator(), false)
@@ -34,36 +34,51 @@ public class UserController {
         .collect(Collectors.toList()));
   }
 
+  public ResponseEntity<List<User>> listFailback() {
+    return ResponseEntity.notFound().build();
+  }
+
   @RequestMapping(method = RequestMethod.POST)
-  @HystrixCommand(fallbackMethod = "notFound")
+  @HystrixCommand(fallbackMethod = "createFallback")
   public ResponseEntity<User> create(@RequestBody User user){
-    return ResponseEntity.ok().body(Convert.api(userRepository.create(Convert.base(user))));
+    return ResponseEntity.ok(Convert.api(userRepository.create(Convert.base(user))));
+  }
+
+  public ResponseEntity<User> createFallback(User user){
+    return ResponseEntity.notFound().build();
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-  @HystrixCommand(fallbackMethod = "notFound")
+  @HystrixCommand(fallbackMethod = "getFallback")
   public ResponseEntity<User> get(@PathVariable UUID id){
     return userRepository.findById(id).map(user -> ResponseEntity.ok(Convert.api(user)))          //200 OK
-        .orElseGet(() -> ResponseEntity.notFound().build());  //404 Not found
+        .orElse(ResponseEntity.notFound().build());  //404 Not found
+  }
+
+  public ResponseEntity<User> getFallback(UUID id) {
+    return ResponseEntity.notFound().build();
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-  @HystrixCommand(fallbackMethod = "notFound")
+  @HystrixCommand(fallbackMethod = "updateFallback")
   public ResponseEntity<User> update(@PathVariable UUID id, @RequestBody User user) {
     org.springframework.boot.kubescaler.base.model.User data = Convert.base(user);
     data.setId(id);
-    return ResponseEntity.ok().body(Convert.api(userRepository.save(data)));
+    return ResponseEntity.ok(Convert.api(userRepository.save(data)));
+  }
+
+  public ResponseEntity<User> updateFallback(UUID id, User user) {
+    return ResponseEntity.notFound().build();
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-  @HystrixCommand(fallbackMethod = "notFound")
+  @HystrixCommand(fallbackMethod = "deleteFallback")
   public ResponseEntity delete(@PathVariable UUID id){
     userRepository.deleteById(id);
     return ResponseEntity.ok().build();
   }
 
-  // fallback method
-  public<T> ResponseEntity<T> notFound() {
+  public ResponseEntity deleteFallback(UUID id) {
     return ResponseEntity.notFound().build();
   }
 }

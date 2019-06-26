@@ -11,4 +11,5 @@ import lombok.Data;
 public class User implements Serializable {
 
   private UUID id;
+  private String name;
 }

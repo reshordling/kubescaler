@@ -5,11 +5,11 @@ import org.springframework.boot.kubescaler.base.model.User;
 
 class Convert {
   static org.springframework.boot.kubescaler.api.User api(User user) {
-    return new org.springframework.boot.kubescaler.api.User(user.getId());
+    return new org.springframework.boot.kubescaler.api.User(user.getId(), user.getName());
   }
 
   static User base(org.springframework.boot.kubescaler.api.User user) {
-    return User.builder().id(user.getId()).build();
+    return User.builder().id(user.getId()).name(user.getName()).build();
   }
 
 

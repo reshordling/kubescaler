@@ -18,4 +18,7 @@ public class User implements Serializable, UuidSetter {
   @PrimaryKey
   @CassandraType(type = DataType.Name.UUID)
   public UUID id;
+
+  @CassandraType(type = DataType.Name.TEXT)
+  public String name;
 }
