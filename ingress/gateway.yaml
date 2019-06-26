@@ -6,7 +6,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   backend:
-    serviceName: user-service
+    serviceName: main-service
     servicePort: 8080
 #  rules:
 #    - http:

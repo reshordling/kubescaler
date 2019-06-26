@@ -1,0 +1,12 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: main-service
+spec:
+  selector:
+    app: main
+  ports:
+    - protocol: TCP
+      port: 8080
+  clusterIP: None
