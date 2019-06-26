@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
 @RequestMapping(path = "users/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -25,25 +26,29 @@ public class UserController {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public List<User> list(){
-    return StreamSupport
+  @HystrixCommand(fallbackMethod = "notFound")
+  public ResponseEntity<List<User>> list() {
+    return ResponseEntity.ok(StreamSupport
         .stream(userRepository.findAll().spliterator(), false)
         .map(Convert::api)
-        .collect(Collectors.toList());
+        .collect(Collectors.toList()));
   }
 
   @RequestMapping(method = RequestMethod.POST)
+  @HystrixCommand(fallbackMethod = "notFound")
   public ResponseEntity<User> create(@RequestBody User user){
     return ResponseEntity.ok().body(Convert.api(userRepository.create(Convert.base(user))));
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+  @HystrixCommand(fallbackMethod = "notFound")
   public ResponseEntity<User> get(@PathVariable UUID id){
-    return userRepository.findById(id).map(user -> ResponseEntity.ok().body(Convert.api(user)))          //200 OK
+    return userRepository.findById(id).map(user -> ResponseEntity.ok(Convert.api(user)))          //200 OK
         .orElseGet(() -> ResponseEntity.notFound().build());  //404 Not found
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+  @HystrixCommand(fallbackMethod = "notFound")
   public ResponseEntity<User> update(@PathVariable UUID id, @RequestBody User user) {
     org.springframework.boot.kubescaler.base.model.User data = Convert.base(user);
     data.setId(id);
@@ -51,7 +56,14 @@ public class UserController {
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-  public void delete(@PathVariable UUID id){
+  @HystrixCommand(fallbackMethod = "notFound")
+  public ResponseEntity delete(@PathVariable UUID id){
     userRepository.deleteById(id);
+    return ResponseEntity.ok().build();
+  }
+
+  // fallback method
+  public<T> ResponseEntity<T> notFound() {
+    return ResponseEntity.notFound().build();
   }
 }
