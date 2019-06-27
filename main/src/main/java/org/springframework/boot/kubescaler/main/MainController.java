@@ -1,5 +1,6 @@
 package org.springframework.boot.kubescaler.main;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.boot.kubescaler.api.Profile;
 import org.springframework.boot.kubescaler.api.User;
@@ -7,12 +8,13 @@ import org.springframework.boot.kubescaler.main.data.DataService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Controller
+@RestController
 @Slf4j
 public class MainController {
 
@@ -22,17 +24,24 @@ public class MainController {
     this.dataService = dataService;
   }
 
-  @RequestMapping(value = "/health", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity health() {
-    return new ResponseEntity<>(HttpStatus.OK);
+  private final String hostName = System.getenv("HOSTNAME");
+
+  @RequestMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
+  public ResponseEntity<String> ribbonPing() {
+    return ResponseEntity.ok(hostName);
   }
 
-  @RequestMapping(value = "/testdata", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity testdata() {
+  @RequestMapping(value = "/health", produces = MediaType.TEXT_HTML_VALUE)
+  public ResponseEntity health() {
+    return new ResponseEntity(HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/testdata", produces = MediaType.TEXT_HTML_VALUE)
+  public ResponseEntity<String> testdata() {
     log.debug("Starting testdata generation");
     dataService.createTestdataAsync();
     log.debug("Don't wait until testdata generation is finished");
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok("Generating testdata");
   }
 
   @RequestMapping(value = "/i-swear-i-want-drop-everything", produces = MediaType.TEXT_HTML_VALUE)
@@ -42,14 +51,20 @@ public class MainController {
     return ResponseEntity.ok("DB content successfully dropped, no snapshots");
   }
 
-  @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
+  @RequestMapping(value = "/users", produces = MediaType.TEXT_HTML_VALUE)
+  public ResponseEntity<String> indexUsers() {
+    String profilesTextRepresentation = dataService.getUsers().stream().map(User::toString).collect(Collectors.joining("\n"));
+    return ResponseEntity.ok(profilesTextRepresentation);
+  }
+
+  @RequestMapping(value = "/profiles", produces = MediaType.TEXT_HTML_VALUE)
   public ResponseEntity<String> indexProfiles() {
     String profilesTextRepresentation = dataService.getProfiles().stream().map(Profile::toString).collect(Collectors.joining("\n"));
     return ResponseEntity.ok(profilesTextRepresentation);
   }
 
-  @RequestMapping(value = "/users", produces = MediaType.TEXT_HTML_VALUE)
-  public ResponseEntity<String> indexUsers() {
+  @RequestMapping(value = "/start/{userId}/{profileId}", produces = MediaType.TEXT_HTML_VALUE)
+  public ResponseEntity<String> start(@PathVariable UUID userId, @PathVariable  UUID profileId) {
     String profilesTextRepresentation = dataService.getUsers().stream().map(User::toString).collect(Collectors.joining("\n"));
     return ResponseEntity.ok(profilesTextRepresentation);
   }
