@@ -5,10 +5,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class Profile implements Serializable {
 
   private UUID id;

@@ -5,7 +5,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.springframework.boot.kubescaler.api.Profile;
-import org.springframework.boot.kubescaler.api.User;
 import org.springframework.boot.kubescaler.base.service.ProfileRepository;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +44,7 @@ public class ProfileController {
     return ResponseEntity.ok(Convert.api(profileRepository.create(Convert.base(profile))));
   }
 
-  public ResponseEntity<Profile> createFallback(User user){
+  public ResponseEntity<Profile> createFallback(Profile profile){
     return ResponseEntity.notFound().build();
   }
 
@@ -68,7 +67,7 @@ public class ProfileController {
     return ResponseEntity.ok(Convert.api(profileRepository.save(data)));
   }
 
-  public ResponseEntity<Profile> updateFallback(UUID id, User user) {
+  public ResponseEntity<Profile> updateFallback(UUID id, Profile profile) {
     return ResponseEntity.notFound().build();
   }
 
@@ -80,6 +79,17 @@ public class ProfileController {
   }
 
   public ResponseEntity deleteFallback(UUID id) {
+    return ResponseEntity.notFound().build();
+  }
+
+  @RequestMapping(value = "/drop", method = RequestMethod.DELETE)
+  @HystrixCommand(fallbackMethod = "dropFallback")
+  public ResponseEntity drop(){
+    profileRepository.deleteAll();
+    return ResponseEntity.ok().build();
+  }
+
+  public ResponseEntity dropFallback() {
     return ResponseEntity.notFound().build();
   }
 }

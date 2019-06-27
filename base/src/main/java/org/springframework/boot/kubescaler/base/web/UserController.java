@@ -81,4 +81,15 @@ public class UserController {
   public ResponseEntity deleteFallback(UUID id) {
     return ResponseEntity.notFound().build();
   }
+
+  @RequestMapping(value = "/drop", method = RequestMethod.DELETE)
+  @HystrixCommand(fallbackMethod = "dropFallback")
+  public ResponseEntity drop(){
+    userRepository.deleteAll();
+    return ResponseEntity.ok().build();
+  }
+
+  public ResponseEntity dropFallback() {
+    return ResponseEntity.notFound().build();
+  }
 }

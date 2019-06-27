@@ -1,21 +1,25 @@
 package org.springframework.boot.kubescaler.main;
 
-import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.boot.kubescaler.api.Profile;
 import org.springframework.boot.kubescaler.api.User;
-import org.springframework.boot.kubescaler.main.rest.UserService;
+import org.springframework.boot.kubescaler.main.data.DataService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
+@Slf4j
 public class MainController {
 
-  private final UserService userService;
+  private final DataService dataService;
 
-  public MainController(UserService userService) {
-    this.userService = userService;
+  public MainController(DataService dataService) {
+    this.dataService = dataService;
   }
 
   @RequestMapping(value = "/health", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -23,52 +27,31 @@ public class MainController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
-  public ResponseEntity<String> index() {
-    ResponseEntity<List<User>> users = userService.getAll();
-    if (users.getStatusCode() == HttpStatus.OK) {
-      return ResponseEntity.ok(users.getBody().toString());
-    }
-    return ResponseEntity.notFound().build();
+  @RequestMapping(value = "/testdata", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity testdata() {
+    log.debug("Starting testdata generation");
+    dataService.createTestdataAsync();
+    log.debug("Don't wait until testdata generation is finished");
+    return ResponseEntity.ok().build();
   }
-//  final UserRepository userRepository;
-//  final ProfileRepository profileRepository;
-//
-//  public MainController(UserRepository userRepository, ProfileRepository profileRepository) {
-//    this.userRepository = userRepository;
-//    this.profileRepository = profileRepository;
-//  }
-//
-//  // Populate users and profiles
-//  @RequestMapping(value = "testdata", produces = MediaType.TEXT_HTML_VALUE)
-//  public ResponseEntity testdata() {
-//    Faker fakeNameGenerator = new Faker();
-//    // cannot save at one go - there are chances of non-unique UUIDs (is it possible to move it to Cassandra?)
-//    IntStream.rangeClosed(1, new Random().nextInt(100)).forEach(nr -> {
-//      Set<UUID> users = IntStream.rangeClosed(1, new Random().nextInt(100))
-//          .mapToObj(dr -> userRepository.create(User.builder().name(fakeNameGenerator.funnyName().name()).build()).getId())
-//          .collect(Collectors.toSet());
-//      profileRepository.create(Profile.builder().users(users).build());
-//    });
-//
-//    String testProfiles = StreamSupport
-//        .stream(profileRepository.findAll().spliterator(), false)
-//        .map(Profile::toString)
-//        .collect(Collectors.joining(","));
-//
-//    return ResponseEntity.ok(testProfiles);
-//  }
-//
-//  // Drop everything
-//  @RequestMapping(value = "drop", produces = MediaType.TEXT_HTML_VALUE)
-//  public ResponseEntity drop() {
-//    profileRepository.deleteAll();
-//    userRepository.deleteAll();
-//    return ResponseEntity.ok("Dropped");
-//  }
-//
-//  @RequestMapping(value = "health", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//  public ResponseEntity health() {
-//    return new ResponseEntity<>(HttpStatus.OK);
-//  }
+
+  @RequestMapping(value = "/i-swear-i-want-drop-everything", produces = MediaType.TEXT_HTML_VALUE)
+  // delete testdata. what should be done about active sessions?
+  public ResponseEntity<String> drop() {
+    dataService.dropAll();
+    return ResponseEntity.ok("DB content successfully dropped, no snapshots");
+  }
+
+  @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
+  public ResponseEntity<String> indexProfiles() {
+    String profilesTextRepresentation = dataService.getProfiles().stream().map(Profile::toString).collect(Collectors.joining("\n"));
+    return ResponseEntity.ok(profilesTextRepresentation);
+  }
+
+  @RequestMapping(value = "/users", produces = MediaType.TEXT_HTML_VALUE)
+  public ResponseEntity<String> indexUsers() {
+    String profilesTextRepresentation = dataService.getUsers().stream().map(User::toString).collect(Collectors.joining("\n"));
+    return ResponseEntity.ok(profilesTextRepresentation);
+  }
 }
+
