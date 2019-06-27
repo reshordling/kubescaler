@@ -18,7 +18,7 @@ spec:
       initContainers:
         - name: init-cassandra
           image: busybox:1.28.4
-          command: ['sh', '-c', 'until nslookup cassandra; do echo waiting for cassandra; sleep 2; done;']
+          command: ['sh', '-c', 'until nslookup cassandra.default.svc.cluster.local; do echo waiting for cassandra; sleep 2; done;']
       containers:
         - name: base
           image: kubescaler/base:latest
