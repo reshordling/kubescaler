@@ -10,6 +10,7 @@ import com.datastax.driver.core.DataType;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 
 @Table("profile")
 @Data
@@ -18,8 +19,10 @@ public class Profile implements Serializable, UuidSetter {
 
   @PrimaryKey
   @CassandraType(type = DataType.Name.UUID)
+  @NonNull
   private UUID id;
 
   @CassandraType(type = DataType.Name.SET, typeArguments = { DataType.Name.UUID } )
+  @NonNull
   private Set<UUID> users;
 }

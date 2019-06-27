@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.boot.kubescaler.api.Profile;
@@ -17,6 +18,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.javafaker.Faker;
+import com.lomagicode.redlock.spring.boot.autoconfigure.RedisLockService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 public class DataService {
 
   private final BaseService baseService;
+  private final RedisLockService redisLockService;
 
-  public DataService(BaseService baseService) {
+  public DataService(BaseService baseService, RedisLockService redisLockService) {
     this.baseService = baseService;
+    this.redisLockService = redisLockService;
   }
 
   @Transactional
@@ -85,5 +89,25 @@ public class DataService {
 
   public Collection<User> getUsersFallback() {
     return Collections.emptyList();
+  }
+
+  @HystrixCommand(fallbackMethod = "hasAccessFallback")
+  public boolean hasAccess(UUID userId, UUID profileId) {
+    ResponseEntity<Profile> profilesResponse = baseService.getProfile(profileId);
+    return profilesResponse.getStatusCode() == HttpStatus.OK && profilesResponse.getBody().getUsers().contains(userId);
+  }
+
+  @HystrixCommand(fallbackMethod = "acquireLockFallback")
+  public boolean acquireLock(String keyPair) {
+    // https://redis.io/topics/distlock
+    return redisLockService.acquire(keyPair, 1, TimeUnit.MINUTES);
+  }
+
+  public boolean hasAccessFallback(UUID userId, UUID profileId) {
+    return false;
+  }
+
+  public boolean acquireLockFallback(String keyPair) {
+    return false;
   }
 }

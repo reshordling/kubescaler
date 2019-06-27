@@ -9,6 +9,7 @@ import com.datastax.driver.core.DataType;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 
 @Table("user")
 @Data
@@ -17,8 +18,10 @@ public class User implements Serializable, UuidSetter {
 
   @PrimaryKey
   @CassandraType(type = DataType.Name.UUID)
+  @NonNull
   public UUID id;
 
   @CassandraType(type = DataType.Name.TEXT)
+  @NonNull
   public String name;
 }

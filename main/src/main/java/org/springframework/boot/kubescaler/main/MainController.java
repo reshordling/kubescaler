@@ -63,10 +63,10 @@ public class MainController {
     return ResponseEntity.ok(profilesTextRepresentation);
   }
 
-  @RequestMapping(value = "/start/{userId}/{profileId}", produces = MediaType.TEXT_HTML_VALUE)
-  public ResponseEntity<String> start(@PathVariable UUID userId, @PathVariable  UUID profileId) {
-    String profilesTextRepresentation = dataService.getUsers().stream().map(User::toString).collect(Collectors.joining("\n"));
-    return ResponseEntity.ok(profilesTextRepresentation);
+  @RequestMapping(value = "/login/{userId}/{profileId}", produces = MediaType.TEXT_HTML_VALUE)
+  public ResponseEntity<String> login(@PathVariable UUID userId, @PathVariable  UUID profileId) {
+    return dataService.hasAccess(userId, profileId) && dataService.acquireLock(userId.toString() + ":" + profileId.toString()) ?
+        ResponseEntity.ok("Profile started") : ResponseEntity.notFound().build();
   }
 }
 

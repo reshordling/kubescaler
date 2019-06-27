@@ -33,6 +33,7 @@
     <maven.compiler.target>12</maven.compiler.target>
     <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
     <javafaker.version>0.18</javafaker.version>
+    <spring-boot-redlock.version>1.0.0</spring-boot-redlock.version>
   </properties>
 
   <dependencyManagement>
@@ -76,6 +77,13 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-openfeign</artifactId>
         <version>2.0.1.RELEASE</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.lomagicode.spring.boot</groupId>
+        <artifactId>redlock-spring-boot-starter</artifactId>
+        <version>${spring-boot-redlock.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -132,6 +140,7 @@
 
   <modules>
     <module>api</module>
+    <module>common</module>
     <module>base</module>
 <!--    <module>user</module>-->
     <module>main</module>
