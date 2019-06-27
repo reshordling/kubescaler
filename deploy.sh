@@ -49,6 +49,7 @@ kubectl create -f base/k8s/deployment.yaml
 
 kubectl create -f main/k8s/service.yaml
 kubectl create -f main/k8s/deployment.yaml
+kubectl create -f main/k8s/hpa.yaml
 
 #kubectl create -f user/k8s/config.yaml
 #kubectl create -f user/k8s/service.yaml
