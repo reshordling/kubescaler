@@ -33,6 +33,8 @@ public class MainController {
 
   @RequestMapping(value = "/health", produces = MediaType.TEXT_HTML_VALUE)
   public ResponseEntity health() {
+    // warm-up
+    dataService.hasAccess(UUID.randomUUID(), UUID.randomUUID());
     return new ResponseEntity(HttpStatus.OK);
   }
 
