@@ -13,7 +13,6 @@ import lombok.NonNull;
 @Builder
 public class User implements Serializable {
 
-  @NonNull
   private UUID id;
   private String name;
 }

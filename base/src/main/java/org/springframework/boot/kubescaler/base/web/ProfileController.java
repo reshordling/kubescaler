@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.springframework.boot.kubescaler.api.Profile;
 import org.springframework.boot.kubescaler.base.service.ProfileRepository;
+import org.springframework.boot.kubescaler.base.service.RelationService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,9 +21,11 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 public class ProfileController {
 
   private final ProfileRepository profileRepository;
+  private final RelationService relationService;
 
-  public ProfileController(ProfileRepository profileRepository) {
+  public ProfileController(ProfileRepository profileRepository, RelationService relationService) {
     this.profileRepository = profileRepository;
+    this.relationService = relationService;
   }
 
   @RequestMapping(method = RequestMethod.GET)
@@ -90,6 +93,20 @@ public class ProfileController {
   }
 
   public ResponseEntity dropFallback() {
+    return ResponseEntity.notFound().build();
+  }
+
+  @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+  @HystrixCommand(fallbackMethod = "userProfilesFallback")
+  public ResponseEntity<List<Profile>> userProfiles(@PathVariable UUID id){
+    return ResponseEntity.ok(relationService
+        .getUserProfiles(id)
+        .stream()
+        .map(Convert::api)
+        .collect(Collectors.toList()));
+  }
+
+  public ResponseEntity<List<Profile>> userProfilesFallback(UUID id) {
     return ResponseEntity.notFound().build();
   }
 }

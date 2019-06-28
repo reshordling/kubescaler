@@ -18,7 +18,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.javafaker.Faker;
-import com.lomagicode.redlock.spring.boot.autoconfigure.RedisLockService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 public class DataService {
 
   private final BaseService baseService;
-  private final RedisLockService redisLockService;
 
-  public DataService(BaseService baseService, RedisLockService redisLockService) {
+  public DataService(BaseService baseService) {
     this.baseService = baseService;
-    this.redisLockService = redisLockService;
   }
 
   @Transactional
@@ -97,17 +94,18 @@ public class DataService {
     return profilesResponse.getStatusCode() == HttpStatus.OK && profilesResponse.getBody().getUsers().contains(userId);
   }
 
-  @HystrixCommand(fallbackMethod = "acquireLockFallback")
-  public boolean acquireLock(String keyPair) {
-    // https://redis.io/topics/distlock
-    return redisLockService.acquire(keyPair, 1, TimeUnit.MINUTES);
-  }
-
   public boolean hasAccessFallback(UUID userId, UUID profileId) {
     return false;
   }
 
-  public boolean acquireLockFallback(String keyPair) {
-    return false;
+  @HystrixCommand(fallbackMethod = "getUserProfilesFallback")
+  public Collection<Profile> getUserProfiles(UUID userId) {
+    ResponseEntity<List<Profile>> profilesResponse = baseService.getUserProfiles(userId);
+    return profilesResponse.getStatusCode() == HttpStatus.OK ?
+        profilesResponse.getBody() : Collections.emptyList();
+  }
+
+  public Collection<Profile> getUserProfilesFallback(UUID userId) {
+    return Collections.emptyList();
   }
 }

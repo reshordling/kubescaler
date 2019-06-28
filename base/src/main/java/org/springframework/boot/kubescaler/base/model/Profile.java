@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
+import org.springframework.data.cassandra.core.mapping.Indexed;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 import com.datastax.driver.core.DataType;
@@ -19,10 +20,9 @@ public class Profile implements Serializable, UuidSetter {
 
   @PrimaryKey
   @CassandraType(type = DataType.Name.UUID)
-  @NonNull
   private UUID id;
 
   @CassandraType(type = DataType.Name.SET, typeArguments = { DataType.Name.UUID } )
-  @NonNull
+  @Indexed
   private Set<UUID> users;
 }

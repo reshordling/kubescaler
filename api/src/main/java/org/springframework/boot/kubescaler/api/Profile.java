@@ -14,8 +14,6 @@ import lombok.NonNull;
 @Builder
 public class Profile implements Serializable {
 
-  @NonNull
   private UUID id;
-  @NonNull
   private Set<UUID> users;
 }
