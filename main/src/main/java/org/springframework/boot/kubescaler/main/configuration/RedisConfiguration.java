@@ -1,30 +1,34 @@
-package org.springframework.boot.kubescaler.common.redis.configuration;
+package org.springframework.boot.kubescaler.main.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+@Configuration
+@EnableRedisRepositories
 public class RedisConfiguration {
-  private final String REDIS_HOSTNAME;
-  private final int REDIS_PORT;
 
-  public RedisConfiguration(String redis_hostname, int redis_port) {
-    REDIS_HOSTNAME = redis_hostname;
-    REDIS_PORT = redis_port;
-  }
+  @Value("${spring.redis.host}") String host;
+  @Value("${spring.redis.port}") int port;
 
+  @Bean
   public JedisConnectionFactory jedisConnectionFactory() {
-    RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(REDIS_HOSTNAME, REDIS_PORT);
+    RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(host, port);
     JedisClientConfiguration jedisClientConfiguration = JedisClientConfiguration.builder().usePooling().build();
     JedisConnectionFactory factory = new JedisConnectionFactory(configuration, jedisClientConfiguration);
     factory.afterPropertiesSet();
     return factory;
   }
 
+  @Bean
   public RedisTemplate<Object, Object> redisTemplate() {
     final RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
     redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -34,5 +38,4 @@ public class RedisConfiguration {
     redisTemplate.setConnectionFactory(jedisConnectionFactory());
     return redisTemplate;
   }
-
 }

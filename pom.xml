@@ -140,9 +140,7 @@
 
   <modules>
     <module>api</module>
-    <module>common</module>
     <module>base</module>
-<!--    <module>user</module>-->
     <module>main</module>
   </modules>
 
