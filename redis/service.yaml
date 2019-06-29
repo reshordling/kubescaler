@@ -4,6 +4,7 @@ metadata:
   labels:
     app: redis
   name: redis
+  namespace: default
 spec:
   clusterIP: None
   ports:
