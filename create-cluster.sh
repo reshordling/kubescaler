@@ -2,7 +2,7 @@
 
 minikube delete
 minikube start \
-  --memory 8192 --cpus 5 \
-  --extra-config=controller-manager.horizontal-pod-autoscaler-upscale-delay=1m  \
+  --memory 8192 --cpus 3 \
+  --extra-config=controller-manager.horizontal-pod-autoscaler-upscale-delay=10s  \
   --extra-config=controller-manager.horizontal-pod-autoscaler-downscale-delay=2m \
   --extra-config=controller-manager.horizontal-pod-autoscaler-sync-period=10s
