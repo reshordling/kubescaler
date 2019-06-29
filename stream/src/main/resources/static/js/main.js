@@ -2,12 +2,12 @@ function loadMessages () {
 
     this.source = null;
 
-    this.start = function () {
+    this.start = function (relativeUrl) {
 
         var messageTable = document.getElementById("messages");
 
         // Relative URL to stream data from microservice
-        this.source = new EventSource("/stream");
+        this.source = new EventSource(relativeUrl);
 
         this.source.addEventListener("message", function (event) {
 
@@ -40,16 +40,4 @@ function loadMessages () {
         this.source.close();
     }
 
-}
-
-message = new loadMessages();
-
-/*
- * Register callbacks for starting and stopping the SSE controller.
- */
-window.onload = function() {
-    message.start();
-};
-window.onbeforeunload = function() {
-    message.stop();
 }

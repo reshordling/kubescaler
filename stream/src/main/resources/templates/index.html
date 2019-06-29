@@ -13,7 +13,7 @@
 
     <div class="row">
         <div id="title">
-            <h1>Spring WebFlux + Server Sent Events</h1>
+            <h1>WebFlux and SSE data</h1>
         </div>
 
         <table id="messages" class="table table-striped">
@@ -38,6 +38,19 @@
 
 <script data-th-src="@{/js/main.js}"></script>
 
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  message = new loadMessages();
+
+  window.onbeforeunload = function() {
+    message.stop();
+  }
+  /** Register callbacks for starting and stopping the SSE controller */
+  window.onload = function() {
+    message.start([[${url}]]);
+  };
+  /*]]>*/
+</script>
 </body>
 
 </html>
