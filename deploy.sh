@@ -10,6 +10,7 @@ mvn clean install
 #docker build -t kubescaler/user user/
 docker build -t kubescaler/base base/
 docker build -t kubescaler/main main/
+docker build -t kubescaler/stream stream/
 
 # Bind access
 kubectl create clusterrolebinding default-admin --clusterrole cluster-admin --serviceaccount=default:default
@@ -51,9 +52,9 @@ kubectl create -f main/k8s/service.yaml
 kubectl create -f main/k8s/deployment.yaml
 kubectl create -f main/k8s/hpa.yaml
 
-#kubectl create -f processor/k8s/service.yaml
-#kubectl create -f processor/k8s/deployment.yaml
-#kubectl create -f processor/k8s/hpa.yaml
+kubectl create -f stream/k8s/service.yaml
+kubectl create -f stream/k8s/deployment.yaml
+kubectl create -f stream/k8s/hpa.yaml
 
 #kubectl create -f user/k8s/config.yaml
 #kubectl create -f user/k8s/service.yaml
