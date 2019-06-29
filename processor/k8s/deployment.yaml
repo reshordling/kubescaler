@@ -1,0 +1,38 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: processor-deployment
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: processor
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: processor
+      annotations:
+        prometheus.io/scrape: 'true'
+    spec:
+      initContainers:
+        - name: init-redis
+          image: busybox:1.28.4
+          command: ['sh', '-c', 'until nslookup redis.default.svc.cluster.local; do echo waiting for redis; sleep 2; done;']
+      containers:
+        - name: processor
+          image: kubescaler/processor:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            httpGet:
+              path: /health
+              port: 8080
+          resources:
+            limits:
+              cpu: 1
+              memory: 512Mi

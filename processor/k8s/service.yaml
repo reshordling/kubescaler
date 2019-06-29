@@ -1,0 +1,14 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: processor-service
+  namespace: default
+spec:
+  selector:
+    app: processor
+  ports:
+    - protocol: TCP
+      port: 8080
+      nodePort: 30082
+  type: NodePort

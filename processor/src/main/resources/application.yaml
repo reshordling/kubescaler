@@ -1,0 +1,19 @@
+spring:
+  application.name: processor
+  cloud.kubernetes.reload.enabled: true
+  redis:
+    host: redis
+    port: 6379
+server.port: 8080
+management:
+  endpoint:
+    restart:
+      enabled: true
+    health:
+      enabled: true
+    info:
+      enabled: true
+ribbon:
+  http:
+    client:
+      enabled: true
