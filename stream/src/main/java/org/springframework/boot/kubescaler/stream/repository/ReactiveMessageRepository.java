@@ -16,7 +16,7 @@ public class ReactiveMessageRepository implements MessageRepository {
 
     @Override
     public Flux<Message> findAll() {
-        //simulate data streaming every 1 second.
+        //simulate data streaming every 100 millis.
         return Flux.interval(Duration.ofMillis(100))
                 .onBackpressureDrop()
                 .map(this::generateMessage)
