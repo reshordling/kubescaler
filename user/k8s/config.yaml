@@ -1,8 +1,0 @@
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: user
-data:
-  application.properties: |-
-    bean.message=Data from Minikube config
