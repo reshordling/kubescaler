@@ -5,6 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import org.springframework.boot.kubescaler.stream.model.Message;
+
+import lombok.NonNull;
 
 public class MessageGenerator {
 
@@ -20,15 +23,23 @@ public class MessageGenerator {
         generateLongMessage('e'),
         generateLongMessage('f'));
 
-    public static String host() {
+    public static Message generate() {
+        return new Message(host(), randomMessage(), getCurrentTimeStamp());
+    }
+
+    public static Message generate(@NonNull String message) {
+        return new Message(host(), message, getCurrentTimeStamp());
+    }
+
+    private static String host() {
         return HOSTNAME;
     }
 
-    public static String randomMessage() {
+    private static String randomMessage() {
         return MESSAGE.get(RANDOM.nextInt(MESSAGE.size()));
     }
 
-    public static String getCurrentTimeStamp() {
+    private static String getCurrentTimeStamp() {
         return dtf.format(LocalDateTime.now());
     }
 
