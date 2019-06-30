@@ -1,5 +1,7 @@
 # kubescaler
 
+<img width="1204" alt="Web-client" src="https://user-images.githubusercontent.com/17854317/60402280-1ae31480-9b96-11e9-81aa-5300831f0656.png">
+
 ## Usual requests
 
 ### User list
@@ -47,3 +49,47 @@ eg.
 http://****.us-west-2.compute.amazonaws.com/main/login/8a377bc6-c2e7-42db-bf80-36301e21f25e
 
 http://****.us-west-2.compute.amazonaws.com/main/login/a4c9302e-026a-4fc1-93c4-6422bea1760f
+
+## Minikube commands
+
+```
+ssh -i ext.public ubuntu@****.us-west-2.compute.amazonaws.com
+sudo -i
+
+# interactive list of containers (ctrl+C to exit)
+kubectl get pods -w
+```
+Produces:
+```
+root@ip-172-31-45-201:~# kubectl get pods -w
+NAME                                READY   STATUS    RESTARTS   AGE
+base-deployment-9bbb48b69-fbblk     1/1     Running   0          91m
+cassandra-0                         1/1     Running   0          91m
+main-deployment-96556bc8d-krmqs     1/1     Running   0          91m
+redis-668947bb88-ftfq6              1/1     Running   0          91m
+stream-deployment-7668bf575-vn6bv   1/1     Running   0          91m
+```
+
+```
+# non-interactive list of scalable services
+kubectl get hpa
+```
+```
+root@ip-172-31-45-201:~# kubectl get hpa
+NAME         REFERENCE                      TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+main-hpa     Deployment/main-deployment     0%/80%    1         3         1          92m
+stream-hpa   Deployment/stream-deployment   0/5       1         5         1          92m
+```
+`main` autoscales if average CPU usage on a single instance is on average >= 80% CPU
+
+`stream` autoscales if there are more than 5 active streaming connections on a single instance
+
+### Dashboard
+```
+root@ip-172-31-45-201:~# minikube dashboard --url
+Verifying dashboard health ...
+Launching proxy ...
+Verifying proxy health ...
+http://127.0.0.1:42327/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/
+```
+There are only 22 and 80 TCP ports available. This is why if one wants to use the dashboard, it should be done via SSH pipeline (port forwarding)
