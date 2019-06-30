@@ -7,29 +7,12 @@ eval $(minikube docker-env)
 ./mvnw clean install
 
 ### build the docker images on minikube
-#docker build -t kubescaler/user user/
 docker build -t kubescaler/base base/
 docker build -t kubescaler/main main/
 docker build -t kubescaler/stream stream/
 
 # Bind access
 kubectl create clusterrolebinding default-admin --clusterrole cluster-admin --serviceaccount=default:default
-
-#### secret and mongodb
-#kubectl delete -f travel-agency-service/secret.yaml
-#kubectl delete -f travel-agency-service/mongo-deployment.yaml
-#
-#kubectl create -f travel-agency-service/secret.yaml
-#kubectl create -f travel-agency-service/mongo-deployment.yaml
-#
-#### travel-agency-service
-#kubectl delete -f travel-agency-service/travel-agency-deployment.yaml
-#kubectl create -f travel-agency-service/travel-agency-deployment.yaml
-#
-#
-### user-service
-#kubectl delete configmap user-service || true
-#kubectl delete -f user-service/user-service-deployment.yaml || true
 
 
 # CPU based autoscaling, for custom metrics use prometheus
@@ -55,11 +38,6 @@ kubectl create -f main/k8s/hpa.yaml
 kubectl create -f stream/k8s/service.yaml
 kubectl create -f stream/k8s/deployment.yaml
 kubectl create -f stream/k8s/hpa.yaml
-
-#kubectl create -f user/k8s/config.yaml
-#kubectl create -f user/k8s/service.yaml
-#kubectl create -f user/k8s/deployment.yaml
-#kubectl create -f user/k8s/hpa.yaml
 
 kubectl create -f ingress/gateway.yaml
 
