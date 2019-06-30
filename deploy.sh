@@ -4,7 +4,7 @@
 eval $(minikube docker-env)
 
 ### build the repository
-mvn clean install
+./mvnw clean install
 
 ### build the docker images on minikube
 #docker build -t kubescaler/user user/

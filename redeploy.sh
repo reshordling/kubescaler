@@ -1,7 +1,7 @@
 #!/bin/bash
 
 eval $(minikube docker-env)
-mvn clean install
+./mvnw clean install
 docker build -t kubescaler/stream stream/
 
 # does it really work?
