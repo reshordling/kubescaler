@@ -60,6 +60,11 @@ public class MainController {
     return ResponseEntity.ok(profilesTextRepresentation);
   }
 
+  @RequestMapping(value = "/suggested", produces = MediaType.TEXT_HTML_VALUE)
+  public ResponseEntity<String> suggestedUserIds() {
+    return ResponseEntity.ok("Suggested users: " + dataService.getSuggestedUserIds().stream().map(UUID::toString).collect(Collectors.joining(",")));
+  }
+
   @RequestMapping(value = "/profiles", produces = MediaType.TEXT_HTML_VALUE)
   public ResponseEntity<String> indexProfiles() {
     String profilesTextRepresentation = dataService.getProfiles().stream().map(Profile::toString).collect(Collectors.joining("\n"));
