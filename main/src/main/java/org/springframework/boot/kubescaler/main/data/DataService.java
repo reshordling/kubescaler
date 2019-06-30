@@ -48,7 +48,7 @@ public class DataService {
           ))
           // do not explode on failures
           .filter(response -> response.getStatusCode() == HttpStatus.OK)
-          .map(response -> response.getBody().getId())
+          .map(this::extractId)
           .collect(Collectors.toSet());
       ResponseEntity<Profile> profileResponse = baseService.createProfile(Profile.builder().users(users).build());
       if (profileResponse.getStatusCode() == HttpStatus.OK) {
@@ -87,16 +87,6 @@ public class DataService {
     return Collections.emptyList();
   }
 
-  @HystrixCommand(fallbackMethod = "hasAccessFallback")
-  public boolean hasAccess(UUID userId, UUID profileId) {
-    ResponseEntity<Profile> profilesResponse = baseService.getProfile(profileId);
-    return profilesResponse.getStatusCode() == HttpStatus.OK && profilesResponse.getBody().getUsers().contains(userId);
-  }
-
-  public boolean hasAccessFallback(UUID userId, UUID profileId) {
-    return false;
-  }
-
   @HystrixCommand(fallbackMethod = "getUserProfilesFallback")
   public Collection<Profile> getUserProfiles(UUID userId) {
     ResponseEntity<List<Profile>> profilesResponse = baseService.getUserProfiles(userId);
@@ -106,5 +96,10 @@ public class DataService {
 
   public Collection<Profile> getUserProfilesFallback(UUID userId) {
     return Collections.emptyList();
+  }
+
+  private UUID extractId(ResponseEntity<User> userResponseEntity) {
+    User user = userResponseEntity.getBody();
+    return user == null ? null : user.getId();
   }
 }

@@ -35,7 +35,14 @@ public class LockService {
     return acquireLock(createKey(userId, profileId), NOOP_ON_ERROR);
   }
 
-  // call onHoldError if holding lock fails
+  /*
+  call onHoldError if holding lock fails (eg Redis is down) - eg use this option to stop streaming
+  when Redis is down. Eg
+
+    final MonoProcessor<String> processor = MonoProcessor.create();
+    return dataService.hasAccess(userId, profileId) && lockService.acquireLock(userId, profileId, () -> processor.onNext("STOP")) ?
+        messageRepository.findAll().doOnCancel(() -> lockService.releaseLock(userId, profileId)).takeUntilOther(processor) : Flux.just(NONE);
+   */
   @HystrixCommand(fallbackMethod = "acquireLockFallback")
   public boolean acquireLock(UUID userId, UUID profileId, @NonNull Runnable onHoldError /* thread-safe only */) {
     return acquireLock(createKey(userId, profileId), onHoldError);

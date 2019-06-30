@@ -6,6 +6,7 @@ import org.springframework.boot.kubescaler.stream.configuration.RibbonConfigurat
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
@@ -13,6 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableCircuitBreaker
 @EnableScheduling
 @RibbonClient(name = "stream-service", configuration = RibbonConfiguration.class)
+@EnableFeignClients
 public class Application {
 
   public static void main(String[] args) {

@@ -20,6 +20,9 @@ spec:
         - name: init-redis
           image: busybox:1.28.4
           command: ['sh', '-c', 'until nslookup redis.default.svc.cluster.local; do echo waiting for redis; sleep 2; done;']
+        - name: init-base
+          image: busybox:1.28.4
+          command: ['sh', '-c', 'until nslookup base-service.default.svc.cluster.local; do echo waiting for redis; sleep 2; done;']
       containers:
         - name: stream
           image: kubescaler/stream:latest

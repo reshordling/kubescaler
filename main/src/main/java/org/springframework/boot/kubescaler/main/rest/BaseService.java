@@ -33,9 +33,6 @@ public interface BaseService {
   @RequestMapping(value = "/profiles", method = RequestMethod.POST)
   ResponseEntity<Profile> createProfile(@RequestBody Profile profile);
 
-  @RequestMapping(value = "/profiles/{id}", method = RequestMethod.GET)
-  ResponseEntity<Profile> getProfile(@PathVariable UUID id);
-
   @RequestMapping(value = "/profiles/user/{id}", method = RequestMethod.GET)
   ResponseEntity<List<Profile>> getUserProfiles(@PathVariable UUID id);
 

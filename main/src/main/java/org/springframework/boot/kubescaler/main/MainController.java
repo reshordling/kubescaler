@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.boot.kubescaler.api.Profile;
 import org.springframework.boot.kubescaler.api.User;
 import org.springframework.boot.kubescaler.main.data.DataService;
-import org.springframework.boot.kubescaler.main.distributed.DistributedService;
+import org.springframework.boot.kubescaler.main.lock.LockService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 public class MainController {
 
   private final DataService dataService;
-  private final DistributedService distributedService;
+  private final LockService lockService;
 
-  public MainController(DataService dataService, DistributedService distributedService) {
+  public MainController(DataService dataService, LockService lockService) {
     this.dataService = dataService;
-    this.distributedService = distributedService;
+    this.lockService = lockService;
   }
 
   private final String hostName = System.getenv("HOSTNAME");
@@ -36,8 +36,6 @@ public class MainController {
 
   @RequestMapping(value = "/health", produces = MediaType.TEXT_HTML_VALUE)
   public ResponseEntity health() {
-    // warm-up
-    dataService.hasAccess(UUID.randomUUID(), UUID.randomUUID());
     return new ResponseEntity(HttpStatus.OK);
   }
 
@@ -68,18 +66,12 @@ public class MainController {
     return ResponseEntity.ok(profilesTextRepresentation);
   }
 
-  @RequestMapping(value = "/login/{userId}/{profileId}", produces = MediaType.TEXT_HTML_VALUE)
-  public ResponseEntity<String> login(@PathVariable UUID userId, @PathVariable  UUID profileId) {
-    return dataService.hasAccess(userId, profileId) && distributedService.acquireLock(userId, profileId) ?
-        ResponseEntity.ok("Profile started") : ResponseEntity.notFound().build();
-  }
-
   @RequestMapping(value = "/login/{userId}", produces = MediaType.TEXT_HTML_VALUE)
   public ResponseEntity<String> activeProfiles(@PathVariable UUID userId) {
     return ResponseEntity.ok(dataService.getUserProfiles(userId)
         .stream()
         .map(Profile::getId)
-        .filter(profileId -> distributedService.isActiveProfile(userId, profileId))
+        .filter(profileId -> lockService.isActiveProfile(userId, profileId))
         .map(UUID::toString)
         .collect(Collectors.joining(",")));
   }
